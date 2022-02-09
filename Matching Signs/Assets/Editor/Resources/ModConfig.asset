@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 615501dbe4f3fe94fbf4b564abb10237, type: 3}
+  m_Name: ModConfig
+  m_EditorClassIdentifier: 
+  id: MatchingSigns
+  title: Matching Signs
+  author: me
+  description: "Oh, you\u2019re a scorpio? I\u2019m sorry, but I can\u2019t be with
+    you.\n\nPair horoscopes such that every one gets a partner.\n\nHappy Valentine's
+    day! I basically just make mods for holidays now lol.\n\nManual can be found at
+    ktane.timwi.de or in the manuals folder of your game.\n\nIf there are any bugs,
+    contact Fartlicker777#9169 on Discord."
+  version: 
+  outputFolder: build
+  previewImage: {fileID: 2800000, guid: e6798d4d9ef9ee641b5a0b0f028bf135, type: 3}
