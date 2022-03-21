@@ -10,6 +10,9 @@ public class MatchingSigns : MonoBehaviour {
    public KMBombInfo Bomb;
    public KMAudio Audio;
 
+   public SpriteRenderer SolvedSign;
+   public Sprite[] SolvedSprites;
+
    public SpriteRenderer[] HoroscopesSR;
    public Sprite[] Horoscopes;
    public KMSelectable[] Tiles;
@@ -142,6 +145,9 @@ public class MatchingSigns : MonoBehaviour {
                }
             }
             else {
+               if (TileValidities[i] != Validity.Unpaired) {
+                  return;
+               }
                if (CheckMatch(ShownSigns[i], ShownSigns[PrevSelected])) {
                   TileValidities[i] = Validity.Valid;
                   TileValidities[PrevSelected] = Validity.Valid;
@@ -209,6 +215,13 @@ public class MatchingSigns : MonoBehaviour {
          yield return new WaitForSeconds(.2f);
       }
       GetComponent<KMBombModule>().HandlePass();
+      SolvedSign.sprite = SolvedSprites[Rnd.Range(0, 12)];
+      SolvedSign.color = new Color32(0, 0, 255, 0);
+      for (int i = 0; i < 64; i++) {
+         SolvedSign.color = new Color32(0, 0, 255, (byte) (i * 4));
+         yield return new WaitForSeconds(.01f);
+      }
+      
    }
 
    void Start () {
