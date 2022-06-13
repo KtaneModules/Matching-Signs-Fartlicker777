@@ -21,6 +21,7 @@ public class MatchingSigns : MonoBehaviour {
    public GameObject[] ThingsToDisappear;
 
    int[] ShownSigns = new int[12];
+   int[] AnswerPairs = new int[12];
 
    int[][] Matches = {
       new int[] { 1, 8 },
@@ -58,6 +59,7 @@ public class MatchingSigns : MonoBehaviour {
 
    int PrevSelected;
    bool HasSelected;
+   bool RealSolve;
 
    static int ModuleIdCounter = 1;
    int ModuleId;
@@ -118,6 +120,7 @@ public class MatchingSigns : MonoBehaviour {
    }
 
    void TilePress (KMSelectable Tile) {
+      if (ModuleSolved) return;
       Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, Tile.transform);
       //StartCoroutine(Solve());
       for (int i = 0; i < 12; i++) {
@@ -215,6 +218,7 @@ public class MatchingSigns : MonoBehaviour {
          yield return new WaitForSeconds(.2f);
       }
       GetComponent<KMBombModule>().HandlePass();
+      RealSolve = true;
       SolvedSign.sprite = SolvedSprites[Rnd.Range(0, 12)];
       SolvedSign.color = new Color32(0, 0, 255, 0);
       for (int i = 0; i < 64; i++) {
@@ -230,7 +234,7 @@ public class MatchingSigns : MonoBehaviour {
          ShownSigns[i + 1] = CreateMatch(ShownSigns[i]);
          Debug.LogFormat("[Matching Signs #{0}] {1} -> {2}", ModuleId, Names[ShownSigns[i]], Names[ShownSigns[i + 1]]);
       }
-      
+      AnswerPairs = (int[])ShownSigns.Clone();
       ShownSigns = ShownSigns.Shuffle();
       for (int i = 0; i < 12; i++) {
          HoroscopesSR[i].GetComponent<SpriteRenderer>().sprite = Horoscopes[ShownSigns[i]];
@@ -246,22 +250,51 @@ public class MatchingSigns : MonoBehaviour {
    }
 
 #pragma warning disable 414
-   private readonly string TwitchHelpMessage = @"Use !{0} X# to select that tile.";
+   private readonly string TwitchHelpMessage = @"Use !{0} <A-D><1-3> to select a tile. Chain with spaces.";
 #pragma warning restore 414
 
    IEnumerator ProcessTwitchCommand (string Command) {
       Command = Command.Trim().ToUpper();
+      string[] tiles = Command.Split(' ');
       yield return null;
-      if (!"ABCD".Contains(Command[0]) || !"123".Contains(Command[1]) || Command.Length != 2) {
-         yield return "sendtochaterror I don't understand!";
+      for (int i = 0; i < tiles.Length; i++)
+      {
+         if (!"ABCD".Contains(tiles[i][0]) || !"123".Contains(tiles[i][1]) || tiles[i].Length != 2)
+         {
+            yield return "sendtochaterror I don't understand!";
+            yield break;
+         }
       }
-      else {
-         Tiles[Array.IndexOf("ABCD".ToCharArray(), Command[0]) * 4 + int.Parse(Command[1].ToString()) - 1].OnInteract();
+      for (int i = 0; i < tiles.Length; i++)
+      {
+         Tiles[Array.IndexOf("ABCD".ToCharArray(), tiles[i][0]) + (int.Parse(tiles[i][1].ToString()) - 1) * 4].OnInteract();
          yield return new WaitForSeconds(.1f);
       }
-   }
+      if (ModuleSolved) yield return "solve";
+    }
 
-   IEnumerator TwitchHandleForcedSolve () {
-      yield return StartCoroutine(Solve());
+   IEnumerator TwitchHandleForcedSolve ()
+   {
+        for (int i = 0; i < 12; i++)
+        {
+            if (TileValidities[i] != Validity.Unpaired)
+            {
+                Tiles[i].OnInteract();
+                yield return new WaitForSeconds(.1f);
+            }
+        }
+        for (int i = 0; i < 12; i++)
+        {
+            for (int j = 0; j < 12; j++)
+            {
+                if (ShownSigns[j] == AnswerPairs[i] && TileValidities[j] == Validity.Unpaired)
+                {
+                    Tiles[j].OnInteract();
+                    yield return new WaitForSeconds(.1f);
+                    break;
+                }
+            }
+        }
+        while (!RealSolve) yield return true;
    }
 }
