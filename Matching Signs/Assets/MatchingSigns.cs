@@ -267,7 +267,9 @@ public class MatchingSigns : MonoBehaviour {
       }
       for (int i = 0; i < tiles.Length; i++)
       {
+         Tiles[Array.IndexOf("ABCD".ToCharArray(), tiles[i][0]) + (int.Parse(tiles[i][1].ToString()) - 1) * 4].OnHighlight();
          Tiles[Array.IndexOf("ABCD".ToCharArray(), tiles[i][0]) + (int.Parse(tiles[i][1].ToString()) - 1) * 4].OnInteract();
+         Tiles[Array.IndexOf("ABCD".ToCharArray(), tiles[i][0]) + (int.Parse(tiles[i][1].ToString()) - 1) * 4].OnHighlightEnded();
          yield return new WaitForSeconds(.1f);
       }
       if (ModuleSolved) yield return "solve";
@@ -279,7 +281,9 @@ public class MatchingSigns : MonoBehaviour {
         {
             if (TileValidities[i] != Validity.Unpaired)
             {
+                Tiles[i].OnHighlight();
                 Tiles[i].OnInteract();
+                Tiles[i].OnHighlightEnded();
                 yield return new WaitForSeconds(.1f);
             }
         }
@@ -289,7 +293,9 @@ public class MatchingSigns : MonoBehaviour {
             {
                 if (ShownSigns[j] == AnswerPairs[i] && TileValidities[j] == Validity.Unpaired)
                 {
+                    Tiles[j].OnHighlight();
                     Tiles[j].OnInteract();
+                    Tiles[j].OnHighlightEnded();
                     yield return new WaitForSeconds(.1f);
                     break;
                 }
