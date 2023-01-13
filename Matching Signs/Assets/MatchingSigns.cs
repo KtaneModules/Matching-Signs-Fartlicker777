@@ -259,7 +259,7 @@ public class MatchingSigns : MonoBehaviour {
       yield return null;
       for (int i = 0; i < tiles.Length; i++)
       {
-         if (!"ABCD".Contains(tiles[i][0]) || !"123".Contains(tiles[i][1]) || tiles[i].Length != 2)
+         if (tiles[i].Length != 2 || !"ABCD".Contains(tiles[i][0]) || !"123".Contains(tiles[i][1]))
          {
             yield return "sendtochaterror I don't understand!";
             yield break;
