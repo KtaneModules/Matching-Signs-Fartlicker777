@@ -75,6 +75,7 @@ public class MatchingSigns : MonoBehaviour {
          //Button.OnHighlightEnded += GameFixes.OnDefocus(() => { TileDeHighlight(Button); });
          Button.OnHighlightEnded += delegate () { TileDeHighlight(Button); };
       }
+
    }
 
    void TileHighlight (KMSelectable Tile) {
